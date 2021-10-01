@@ -90,25 +90,31 @@ if __name__ == "__main__":
 
     scores = pd.read_csv('scores.csv')
 
-    k = 30
-    s = 400
+    def save_ratings(scores: pd.DataFrame) -> None:
 
-    ratings = elo(
-            score_frame = scores,
-            k = k,
-            s = s
-        )
+        k = 50
+        s = 400
 
-    #print(sum(ratings.values()))
+        ratings = elo(
+                score_frame = scores,
+                k = k,
+                s = s
+            )
 
-    out = ''
+        #print(sum(ratings.values()))
 
-    for key, value in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
-        out += f'{key}: {int(value)}\n'
+        out = ''
 
-    print(out)
+        for key, value in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
+            out += f'{key}: {int(value)}\n'
 
-    with open('ratings.yaml', 'w') as writer:
-        writer.write(out)
+        print(out)
+
+        with open('ratings.yaml', 'w') as writer:
+            writer.write(out)
+
+    save_ratings(scores)
+    #save_ratings(pd.concat([scores]*2000))
+
 
 # %%
