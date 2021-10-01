@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
     def save_ratings(scores: pd.DataFrame) -> None:
 
-        k = 50
+        k = 30
         s = 400
 
         ratings = elo(
