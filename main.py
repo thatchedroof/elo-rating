@@ -26,57 +26,63 @@ def elo(score_frame:    pd.DataFrame,
         rating_input:   Dict[str, float] = {}
         ) ->            Dict[str, float]:
 
-    if score_frame.empty:
-        return rating_input
+    while True:
 
-    #assert type(tuple(score_frame.iloc[0])) is Tuple[str, str, int, str]
+        if score_frame.empty:
+            return rating_input
 
-    winner, loser, score, platform = cast(Tuple[str, str, int, str],
-                                          tuple(score_frame.iloc[0]))
+        #assert type(tuple(score_frame.iloc[0])) is Tuple[str, str, int, str]
 
-    ratings = rating_input
+        winnerUF, loserUF, score, platformUF = cast(Tuple[str, str, int, str],
+                                            tuple(score_frame.iloc[0]))
 
-    if winner not in rating_input.keys():
-        ratings = {**ratings, winner: initial_rating}
+        def name_format(x: str) -> str:
+            return ''.join(x.lower().split())
 
-    if loser not in rating_input.keys():
-        ratings = {**ratings, loser: initial_rating}
+        winner = name_format(winnerUF)
 
-    updated_winner = new_rating(
-        old_rating = ratings[winner],
-        actual_outcome = 1 - (score/10),
-        expected_outcome = expected_outcome(
-            own_rating = ratings[winner],
-            opponent_rating = ratings[loser],
-            s = s
-        ),
-        k = k
-    )
+        loser = name_format(loserUF)
 
-    updated_loser = new_rating(
-        old_rating = ratings[loser],
-        actual_outcome = score/10,
-        expected_outcome = expected_outcome(
-            own_rating = ratings[loser],
-            opponent_rating = ratings[winner],
-            s = s
-        ),
-        k = k
-    )
+        platform = name_format(platformUF)
 
-    updated_ratings = {
-        **ratings,
-        winner: updated_winner,
-        loser: updated_loser
-        }
+        ratings = rating_input
 
-    return elo(
-        score_frame = score_frame.iloc[1:, :],
-        k = k,
-        s = s,
-        initial_rating = initial_rating,
+        if winner not in rating_input.keys():
+            ratings = {**ratings, winner: initial_rating}
+
+        if loser not in rating_input.keys():
+            ratings = {**ratings, loser: initial_rating}
+
+        updated_winner = new_rating(
+            old_rating = ratings[winner],
+            actual_outcome = 1 - (score/10),
+            expected_outcome = expected_outcome(
+                own_rating = ratings[winner],
+                opponent_rating = ratings[loser],
+                s = s
+            ),
+            k = k
+        )
+
+        updated_loser = new_rating(
+            old_rating = ratings[loser],
+            actual_outcome = score/10,
+            expected_outcome = expected_outcome(
+                own_rating = ratings[loser],
+                opponent_rating = ratings[winner],
+                s = s
+            ),
+            k = k
+        )
+
+        updated_ratings = {
+            **ratings,
+            winner: updated_winner,
+            loser: updated_loser
+            }
+
+        score_frame = score_frame.iloc[1:, :]
         rating_input = updated_ratings
-    )
 
 #%%
 
@@ -84,7 +90,7 @@ if __name__ == "__main__":
 
     scores = pd.read_csv('scores.csv')
 
-    k = 50
+    k = 30
     s = 400
 
     ratings = elo(
