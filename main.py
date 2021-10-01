@@ -95,7 +95,14 @@ if __name__ == "__main__":
 
     #print(sum(ratings.values()))
 
+    out = ''
+
     for key, value in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
-        print(f'{key}: {int(value)}')
+        out += f'{key}: {int(value)}\n'
+
+    print(out)
+
+    with open('ratings.yaml', 'w') as writer:
+        writer.write(out)
 
 # %%
