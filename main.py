@@ -84,11 +84,16 @@ if __name__ == "__main__":
 
     scores = pd.read_csv('scores.csv')
 
+    k = 50
+    s = 400
+
     ratings = elo(
             score_frame = scores,
-            k = 20,
-            s = 400
+            k = k,
+            s = s
         )
+
+    #print(sum(ratings.values()))
 
     for key, value in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
         print(f'{key}: {int(value)}')
